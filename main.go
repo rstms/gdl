@@ -45,9 +45,12 @@ usage: gdl [flags] URL [OUTPUT_FILE]
 		flag.Usage()
 	}
 	url := flag.Arg(0)
-	outputFile := ""
 	if flag.NArg() > 1 {
-		outputFile = flag.Arg(1)
+		outputFilename = flag.Arg(1)
+	}
+
+	if ca == "" {
+		ca = "/etc/ssl/cert.pem"
 	}
 
 	if verbose {
@@ -56,17 +59,12 @@ usage: gdl [flags] URL [OUTPUT_FILE]
 		log.Printf("ca=%s", ca)
 		log.Printf("cert=%s", cert)
 		log.Printf("key=%s", key)
-		log.Printf("outputFile=%s", outputFile)
+		log.Printf("outputFile=%s", outputFilename)
 	}
 
 	caCert, err := ioutil.ReadFile(ca)
 	if err != nil {
 		log.Fatalf("Error reading CA cert file: %v", err)
-	}
-
-	clientCert, err := tls.LoadX509KeyPair(cert, key)
-	if err != nil {
-		log.Fatalf("Error reading client cert and key: %v", err)
 	}
 
 	caCertPool := x509.NewCertPool()
@@ -75,13 +73,21 @@ usage: gdl [flags] URL [OUTPUT_FILE]
 		log.Fatal("Failed to append CA cert")
 	}
 
-	tlsConfig := &tls.Config{
-		RootCAs:      caCertPool,
-		Certificates: []tls.Certificate{clientCert},
+	tlsConfig := tls.Config{
+		RootCAs: caCertPool,
+	}
+
+	if cert != "" {
+		clientCert, err := tls.LoadX509KeyPair(cert, key)
+		if err != nil {
+			log.Fatalf("Error reading client cert and key: %v", err)
+		}
+
+		tlsConfig.Certificates = []tls.Certificate{clientCert}
 	}
 
 	transport := &http.Transport{
-		TLSClientConfig: tlsConfig,
+		TLSClientConfig: &tlsConfig,
 	}
 
 	client := &http.Client{

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+rm -rf build
+mkdir -p build/bin
+mkdir build/lib
+libs=$(ldd gdl | awk '/\.so/{print $7}')
+install=build/bin/install_gdl
+echo "#!/bin/sh" >$install
+for lib in $libs ; do
+    cp $lib build/lib
+    printf "mkdir -p %s\n" $(dirname $lib) >>$install
+    printf "ln -s /usr/local/lib/%s %s\n" $(basename $lib) $lib >>$install
+done
+cp gdl build/bin
+tar zcf gdl.tgz -C build lib bin
+rm -rf build
+
