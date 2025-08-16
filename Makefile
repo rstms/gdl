@@ -1,6 +1,6 @@
 
-latest_release != gh release list --json tagName --jq '.[0].tagName' | tr -d v
 version != cat VERSION
+latest_release != gh release list --json tagName --jq '.[0].tagName' | tr -d v
 gitclean = $(if $(shell git status --porcelain),$(error git status is dirty),$(info git status is clean))
 
 bin = gdl
@@ -30,5 +30,4 @@ dist: $(bin)
 
 release:
 	$(gitclean) 
-	@$(if $(update),gh release delete -y v$(version),)
 	gh release create v$(version) --notes "v$(version)"
