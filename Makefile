@@ -30,4 +30,4 @@ dist: $(bin)
 
 release:
 	$(gitclean) 
-	gh release create v$(version) --notes "v$(version)"
+	echo gh release create v$(version) --notes "v$(version)"
