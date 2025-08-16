@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-const Version = "0.0.7"
+const Version = "0.0.8"
 
 func main() {
 	var ca, cert, key, outputFilename string
