@@ -56,3 +56,8 @@ sterile: clean
 	go clean -cache
 	go clean -modcache
 	rm -f go.mod go.sum
+
+dist: build
+	./pack
+
+
