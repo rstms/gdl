@@ -12,6 +12,8 @@ import (
 	"strings"
 )
 
+const Version = "0.0.1"
+
 func main() {
 	var ca, cert, key, outputFilename string
 	var verbose bool
@@ -22,8 +24,10 @@ func main() {
 	flag.Usage = func() {
 		log.SetFlags(0)
 		log.SetPrefix("")
+		log.Printf("\ngdl v%s\n", Version)
 		log.Println(`
-gdl - write URL content to local file using designated CA and client cert
+Issue TLS GET request using designated CA and client certificate, 
+writing response data to OUTPUT_FILE
 
 Requires PEM-formatted CA, client certificate, client_key files, 
 specified with flags or environment variables.

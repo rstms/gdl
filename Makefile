@@ -1,4 +1,9 @@
 
+latest_release != gh release list --json tagName --jq '.[0].tagName' | tr -d v
+version != cat VERSION
+
+gitclean = if git status --porcelain | grep '^.*$$'; then echo git status is dirty; false; else echo git status is clean; true; fi
+
 bin = gdl
 
 $(bin): fmt 
@@ -23,3 +28,8 @@ install:
 
 dist: $(bin)
 	./pack
+
+release:
+	@$(gitclean) 
+	@$(if $(update),gh release delete -y v$(version),)
+	gh release create v$(version) --notes "v$(version)"
