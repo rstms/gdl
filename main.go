@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-const Version = "0.1.9"
+const Version = "0.1.10"
 
 func main() {
 	var ca, cert, key, outputFilename string
