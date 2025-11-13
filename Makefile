@@ -71,7 +71,8 @@ package_args = \
  -D MAINTAINER='Matt Krueger <mkrueger@rstms.net>'
 package: $(package_tarball)
 package_dir = pub/OpenBSD/$(shell uname -r)/packages/$(shell uname -m)
-package_tarball = $(package_dir)/$(program)-$(version).tgz
+release_tag != uname -r | tr -d .
+package_tarball = $(package_dir)/$(program)-$(version)v$(release_tag).tgz
 
 installed_binary = /$(install_dir)/$(program)
 
