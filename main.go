@@ -8,6 +8,8 @@ import (
 	"os"
 )
 
+const Version = "0.1.8"
+
 func main() {
 	var ca, cert, key, outputFilename string
 	var version, verbose bool
@@ -18,7 +20,7 @@ func main() {
 	flag.Usage = func() {
 		log.SetFlags(0)
 		log.SetPrefix("")
-		log.Printf("\ngdl v%s\n", gdl.Version)
+		log.Printf("\ngdl v%s\n", Version)
 		log.Println(`
 Issue TLS GET request using designated CA and client certificate, 
 writing response data to OUTPUT_FILE
@@ -42,7 +44,7 @@ usage: gdl [flags] URL [OUTPUT_FILE]
 	flag.Parse()
 
 	if version {
-		fmt.Printf("gdl v%s\n", gdl.Version)
+		fmt.Printf("gdl v%s\n", Version)
 		os.Exit(0)
 	}
 
