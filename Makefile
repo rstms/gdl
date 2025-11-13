@@ -4,30 +4,31 @@ program != basename $$(pwd)
 
 go_version = go1.24.5
 
-latest_release != gh release list --json tagName --jq '.[0].tagName' | tr -d v
+latest_release = gh release list --json tagName --jq '.[0].tagName' | tr -d v
 version != cat VERSION
 
 rstms_modules = $(shell awk <go.mod '/^module/{next} /rstms/{print $$1}')
 
 gitclean = $(if $(shell git status --porcelain),$(error git status is dirty),$(info git status is clean))
 
-$(program): build
+$(program): .fmt
+	go build -ldflags "-linkmode external -extldflags '-static'" .
 
-build: fmt
-	fix go build . ./...
-	go build
-
-fmt: go.sum
-	fix go fmt . ./...
+build: $(program)
 
 go.mod:
 	$(go_version) mod init
 
 go.sum: go.mod
 	go mod tidy
+	@touch $@
 
-install: build
-	go install
+.fmt: $(wildcard *.go) go.sum
+	fix go fmt .
+	@touch $@
+
+fmt: .fmt
+	fix go fmt . ./...
 
 test: fmt
 	go test -v -failfast . ./...
@@ -49,6 +50,8 @@ update:
 clean:
 	rm -f $(program) *.core 
 	go clean
+	rm -rf pub
+	rm -f .fmt
 
 sterile: clean
 	which $(program) && go clean -i || true
@@ -60,4 +63,37 @@ sterile: clean
 dist: build
 	./pack
 
+install_dir = tmp
+package_args = \
+ -D COMMENT='minimal tls client cert file download client' \
+ -D MAINTAINER='Matt Krueger <mkrueger@rstms.net>'
+package: $(package_tarball)
+package_dir = pub/OpenBSD/$(shell uname -r)/packages/$(shell uname -m)
+package_tarball = $(package_dir)/$(program)-$(version).tgz
 
+installed_binary = /$(install_dir)/$(program)
+
+$(installed_binary): $(program)
+	strip $<
+	doas install -o root -g wheel -m 0755 $< $@
+
+$(package_tarball): $(installed_binary)
+	mkdir -p $(package_dir)
+	pkg_create -f PLIST -d DESCR $(package_args) -p $(install_dir) $@
+
+dev_upload_hostname = zippy.rstms.net
+dev_upload_url = https://$(dev_upload_hostname):4443
+netboot_upload_url = https://netboot.rstms.net
+
+install: $(installed_binary)
+
+package: $(package_tarball)
+
+upload: .upload
+
+.upload: $(package_tarball)
+	boxen dist upload $(netboot_upload_url)/$< $<
+	if hostname | grep '^$(dev_upload_hostname)$$'; then \
+	  boxen --enable-netboot-server dist upload $(dev_upload_url)/$< $<; \
+	fi
+	@touch $@

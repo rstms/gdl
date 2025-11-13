@@ -2,3 +2,5 @@ gdl
 notes
 *.tgz
 *postactivate
+.fmt
+.upload

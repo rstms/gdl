@@ -1,0 +1,2 @@
+minimalist TLS file download client supporting client certificates.  Written in Go and
+compiled as a static binary, it is designed to run in the installer ramdisk environment.
