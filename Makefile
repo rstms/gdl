@@ -4,7 +4,7 @@ program != basename $$(pwd)
 
 go_version = go1.24.5
 
-latest_release = gh release list --json tagName --jq '.[0].tagName' | tr -d v
+latest_release != gh release list --json tagName --jq '.[0].tagName' | tr -d v
 version != cat VERSION
 
 rstms_modules = $(shell awk <go.mod '/^module/{next} /rstms/{print $$1}')
