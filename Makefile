@@ -58,10 +58,10 @@ clean:
 	rm -f .fmt
 
 sterile: clean
-	which $(program) && go clean -i || true
-	go clean
-	go clean -cache
-	go clean -modcache
+	-go clean -i
+	-go clean
+	-go clean -cache
+	-go clean -modcache
 	rm -f go.mod go.sum
 
 dist: build
