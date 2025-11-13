@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"flag"
+	"github.com/spf13/viper"
 	"io"
 	"io/ioutil"
 	"log"
@@ -54,6 +55,7 @@ usage: gdl [flags] URL [OUTPUT_FILE]
 	}
 
 	if ca == "" {
+		ca = viper.GetString("ca")
 		ca = "/etc/ssl/cert.pem"
 	}
 
