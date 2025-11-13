@@ -36,12 +36,10 @@ test: fmt
 debug: fmt
 	go test -v -failfast -count=1 -run $(test) . ./...
 
-gh_release_package = $(program)-$(version)v$(shell uname -r | tr -d '.').tgz 
-release: package
+release: $(package_tarball)
 	@$(if $(update),gh release delete -y v$(version),)
 	gh release create v$(version) --notes "v$(version)"
-	cp $(package_tarball) $(gh_release_package)
-	gh release upload v$(version) $(gh_release_package) --clobber
+	cd $(dir $<); gh release upload v$(version) $(notdir $<) --clobber
 
 latest_module_release = $(shell gh --repo $(1) release list --json tagName --jq '.[0].tagName')
 
@@ -79,7 +77,6 @@ installed_binary = /$(install_dir)/$(program)
 $(installed_binary): $(program)
 	strip $<
 	cp $< $@
-	#doas install -o root -g wheel -m 0755 $< $@
 
 $(package_tarball): $(installed_binary)
 	$(gitclean)
