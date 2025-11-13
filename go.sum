@@ -1,2 +1,2 @@
-github.com/rstms/getfile v1.0.1 h1:Zr+mG6NygAntA+EhG1cwpIJJfIlevHGi5NbRy0nE9iU=
-github.com/rstms/getfile v1.0.1/go.mod h1:Z+IvmKRBRsGpSX+8OP9Vjhp2SIp8c0Ek9f5WmFovKd0=
+github.com/spf13/pflag v1.0.10 h1:4EBh2KAYBwaONj6b2Ye1GiHfwjqyROoF4RwYO+vPwFk=
+github.com/spf13/pflag v1.0.10/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An2Bg=

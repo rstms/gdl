@@ -1,9 +1,9 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"github.com/rstms/getfile/gdl"
+	"github.com/rstms/gdl/getfile"
+	flag "github.com/spf13/pflag"
 	"log"
 	"os"
 )
@@ -83,5 +83,5 @@ usage: gdl [flags] URL [OUTPUT_FILE]
 		log.Printf("outputFile=%s", outputFilename)
 	}
 
-	gdl.GetFile(url, ca, cert, key, outputFilename, verbose)
+	getfile.GetFile(url, ca, cert, key, outputFilename, verbose)
 }
