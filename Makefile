@@ -37,11 +37,12 @@ debug: fmt
 	go test -v -failfast -count=1 -run $(test) . ./...
 
 release: $(package_tarball)
-	@echo package_tarball=$(package_tarball)
+	$(gitclean)
+	@$(if $(update),gh release delete -y v$(version),)
+	gh release create v$(version) --notes "v$(version)"
 
-howdy:
-	#@$(if $(update),gh release delete -y v$(version),)
-	#gh release create v$(version) --notes "v$(version)"
+release-package-upload:
+	@echo package_tarball=$(package_tarball)
 	{ cd $(dir $(package_tarball)); ls; echo gh release upload v$(version) $(notdir $(package_tarball)) --clobber; }
 
 latest_module_release = $(shell gh --repo $(1) release list --json tagName --jq '.[0].tagName')
