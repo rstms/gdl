@@ -36,8 +36,7 @@ test: fmt
 debug: fmt
 	go test -v -failfast -count=1 -run $(test) . ./...
 
-release:
-	$(gitclean)
+release: package
 	@$(if $(update),gh release delete -y v$(version),)
 	gh release create v$(version) --notes "v$(version)"
 
@@ -78,6 +77,7 @@ $(installed_binary): $(program)
 	doas install -o root -g wheel -m 0755 $< $@
 
 $(package_tarball): $(installed_binary)
+	$(gitclean)
 	mkdir -p $(package_dir)
 	pkg_create -f PLIST -d DESCR $(package_args) -p $(install_dir) $@
 
