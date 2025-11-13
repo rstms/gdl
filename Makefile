@@ -74,7 +74,8 @@ installed_binary = /$(install_dir)/$(program)
 
 $(installed_binary): $(program)
 	strip $<
-	doas install -o root -g wheel -m 0755 $< $@
+	cp $< $@
+	#doas install -o root -g wheel -m 0755 $< $@
 
 $(package_tarball): $(installed_binary)
 	$(gitclean)
