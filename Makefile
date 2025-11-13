@@ -67,10 +67,14 @@ dist: build
 	./pack
 
 install_dir = tmp
-package_args = \
+pkg_create_args = -S -v \
+ -A $(shell uname -m) \
  -D COMMENT='minimal tls client cert file download client' \
- -D MAINTAINER='Matt Krueger <mkrueger@rstms.net>'
-package: $(package_tarball)
+ -D MAINTAINER='Matt Krueger <mkrueger@rstms.net>' \
+ -d pkg/DESCR \
+ -f pkg/PLIST 
+
+
 package_dir = pub/OpenBSD/$(shell uname -r)/packages/$(shell uname -m)
 release_tag != uname -r | tr -d .
 package_tarball = $(package_dir)/$(program)-$(version)v$(release_tag).tgz
@@ -84,7 +88,7 @@ $(installed_binary): $(program)
 $(package_tarball): $(installed_binary)
 	$(gitclean)
 	mkdir -p $(package_dir)
-	pkg_create -f PLIST -d DESCR $(package_args) -p $(install_dir) $@
+	pkg_create $(pkg_create_args) -p $(install_dir) $@
 
 dev_upload_hostname = zippy.rstms.net
 dev_upload_url = https://$(dev_upload_hostname):4443
